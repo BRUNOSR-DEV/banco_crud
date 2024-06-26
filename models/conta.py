@@ -1,7 +1,5 @@
 from models.cliente import Cliente
-import MySQLdb
-from utils.helper import formata_float_str_moeda
-from utils.helper import conectar,desconectar,str_para_date
+from utils.helper import conectar,desconectar,str_para_date, formata_float_str_moeda
 
 class Conta:
 
@@ -11,12 +9,12 @@ class Conta:
         self.__saldo: float = 0
         self.__limite: float = 100 #Limite seria uma especie de LIS, empréstimo
         self.__saldo_total: float = self._calcula_saldo_total
-        self.__num_conta = criar_num_conta()
+        self.__num_id = criar_ret_num_id()
         
-
     @property
-    def numero(self)-> int:
-        return self.__numero
+    def num_id(self):
+        return criar_ret_num_id()
+    
     
     @property
     def cliente(self)-> Cliente:
@@ -51,7 +49,7 @@ class Conta:
         self.__saldo_total = valor
 
     def __str__(self:object) -> str:
-        return f'Número da conta: {self.numero} \nCliente: {self.cliente.nome} \nValor em conta: {formata_float_str_moeda(self.saldo)}\nLimite: {formata_float_str_moeda(self.limite)}'
+        return f'Cliente: {self.cliente.nome} \nValor em conta: {formata_float_str_moeda(self.saldo)}\nLimite: {formata_float_str_moeda(self.limite)}'
 
 
     def depositar(self,valor:float) -> str:
@@ -117,9 +115,8 @@ class Conta:
         else:
             print('Erro! Tente novamente!')
 
-    
 
-def criar_num_conta():
+def criar_ret_num_id(self):
 
         conn = conectar()
         cursor = conn.cursor()
@@ -130,14 +127,14 @@ def criar_num_conta():
         num_conta = 1001
 
         for conta in contas:
-            if conta == num_conta:
+            if conta[1] == num_conta:
                 num_conta = num_conta + 1
             else:
-                return num_conta
+                cursor.execute(f"INSERT INTO contas (num_conta, saldo, limite) VALUES ({num_conta},{self.saldo},{self.limite}")
+                conn.commit()
+                return conta[0]
+        desconectar(conn)
 
-def gravar_dados_conta(self):
-        conn = conectar()
-        cursor = conn.cursor()
+    
 
-        cursor.execute(f"INSERT INTO contas (num_conta, saldo, limite) VALUES ({criar_num_conta()},{self.saldo},{self.limite}")
-        conn.commit()
+

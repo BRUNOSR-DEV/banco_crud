@@ -1,10 +1,10 @@
+from models.cliente import Cliente
+from models.conta import Conta
 from typing import List
 from time import sleep
-import MySQLdb
-from models.cliente import Cliente, gravar_dados_cliente
-from models.conta import Conta
 from utils.helper import conectar,desconectar,str_para_date
 from datetime import datetime
+import MySQLdb
 
 
 #Clientes e Contas pré definidos
@@ -77,26 +77,17 @@ def criar_conta()-> None:
     email = input('E-mail: ')
     dt_nascimento = input('Data de Nascimento: ')
 
-    conn = conectar()
-    cursor = conn.cursor()
+    cl: Cliente = Cliente(nome,cpf,email,dt_nascimento)
+    co: Conta = Conta(cl)
 
-    cursor.execute(f"INSERT INTO clientes (nome, email,  cpf, data_nascimento, data_cadastro, id_contas ) VALUES ('{nome}','{email}','{cpf}',{str_para_date(dt_nascimento)},{datetime.now()})")
-    
-
-    conn.commit()
+    Cliente.gravar_dados()
     
 
     #contas.append(conta)
 
-    
-    
-    
-    
-
     print('Conta foi criada com sucesso.')
     print('Dados da conta:')
     print('--------------')
-    print(conta)
     sleep(1)
     menu()
 
